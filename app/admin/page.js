@@ -13,18 +13,35 @@ export default function AdminPage() {
 
   const [registrations, setRegistrations] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [initError, setInitError] = useState(null);
 
   useEffect(() => {
-    getSupabase().auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setCheckingSession(false);
-    });
+    let authSubscription = null;
 
-    const { data: listener } = getSupabase().auth.onAuthStateChange((_event, newSession) => {
-      setSession(newSession);
-    });
+    async function initAuth() {
+      try {
+        const supabase = getSupabase();
+        const { data } = await supabase.auth.getSession();
+        setSession(data.session);
 
-    return () => listener.subscription.unsubscribe();
+        const { data: authListener } = supabase.auth.onAuthStateChange((_event, newSession) => {
+          setSession(newSession);
+        });
+        authSubscription = authListener.subscription;
+      } catch (error) {
+        setInitError(error instanceof Error ? error.message : "Unable to connect to Supabase.");
+      } finally {
+        setCheckingSession(false);
+      }
+    }
+
+    initAuth();
+
+    return () => {
+      if (authSubscription) {
+        authSubscription.unsubscribe();
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -60,6 +77,24 @@ export default function AdminPage() {
         <div className="loading-state">
           <div className="loading-spinner" aria-hidden="true" />
           <span>Checking session...</span>
+        </div>
+      </main>
+    );
+  }
+
+  if (initError) {
+    return (
+      <main className="admin-page">
+        <div className="admin-login-wrap">
+          <div className="admin-login">
+            <span className="admin-login-badge">Staff Portal</span>
+            <h2>Configuration Required</h2>
+            <p className="admin-login-desc">{initError}</p>
+            <p className="admin-login-desc">
+              In Vercel, add <strong>NEXT_PUBLIC_SUPABASE_URL</strong> and{" "}
+              <strong>NEXT_PUBLIC_SUPABASE_ANON_KEY</strong>, then trigger a new deployment.
+            </p>
+          </div>
         </div>
       </main>
     );
