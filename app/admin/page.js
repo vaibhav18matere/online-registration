@@ -10,7 +10,6 @@ export default function AdminPage() {
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState(null);
   const [loggingIn, setLoggingIn] = useState(false);
-
   const [registrations, setRegistrations] = useState([]);
   const [loading, setLoading] = useState(false);
   const [initError, setInitError] = useState(null);
