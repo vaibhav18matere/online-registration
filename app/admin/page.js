@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { supabase } from "../../lib/supabase";
+import { getSupabase } from "../../lib/supabase";
 
 export default function AdminPage() {
   const [session, setSession] = useState(null);
@@ -15,12 +15,12 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
+    getSupabase().auth.getSession().then(({ data }) => {
       setSession(data.session);
       setCheckingSession(false);
     });
 
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, newSession) => {
+    const { data: listener } = getSupabase().auth.onAuthStateChange((_event, newSession) => {
       setSession(newSession);
     });
 
@@ -33,7 +33,7 @@ export default function AdminPage() {
 
   async function fetchRegistrations() {
     setLoading(true);
-    const { data, error } = await supabase
+    const { data, error } = await getSupabase()
       .from("registrations")
       .select("*")
       .order("created_at", { ascending: false });
@@ -45,13 +45,13 @@ export default function AdminPage() {
     e.preventDefault();
     setLoginError(null);
     setLoggingIn(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await getSupabase().auth.signInWithPassword({ email, password });
     if (error) setLoginError(error.message);
     setLoggingIn(false);
   }
 
   async function handleLogout() {
-    await supabase.auth.signOut();
+    await getSupabase().auth.signOut();
   }
 
   if (checkingSession) {

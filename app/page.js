@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { supabase } from "../lib/supabase";
+import { getSupabase } from "../lib/supabase";
 import { validateForm } from "../lib/validation";
 
 const initialState = {
@@ -60,9 +60,9 @@ export default function Home() {
   async function uploadFile(file, folder) {
     const ext = file.name.split(".").pop();
     const fileName = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-    const { error } = await supabase.storage.from("uploads").upload(fileName, file);
+    const { error } = await getSupabase().storage.from("uploads").upload(fileName, file);
     if (error) throw error;
-    const { data } = supabase.storage.from("uploads").getPublicUrl(fileName);
+    const { data } = getSupabase().storage.from("uploads").getPublicUrl(fileName);
     return data.publicUrl;
   }
 
@@ -83,7 +83,7 @@ export default function Home() {
       const paymentScreenshotUrl = await uploadFile(files.payment_screenshot, "screenshots");
       const photographUrl = files.photograph ? await uploadFile(files.photograph, "photos") : null;
 
-      const { error } = await supabase.from("registrations").insert([
+      const { error } = await getSupabase().from("registrations").insert([
         {
           full_name: formData.full_name.trim(),
           father_name: formData.father_name.trim(),
