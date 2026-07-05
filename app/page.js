@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { getSupabase } from "../lib/supabase";
 import { validateForm } from "../lib/validation";
+import { DeclarationModal } from "../components/DeclarationModal";
 
 const initialState = {
   full_name: "",
@@ -38,6 +39,8 @@ export default function Home() {
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState(null); // { type: 'success' | 'error', message }
+  const [consentAccepted, setConsentAccepted] = useState(false);
+  const [declarationOpen, setDeclarationOpen] = useState(false);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -70,7 +73,7 @@ export default function Home() {
     e.preventDefault();
     setStatus(null);
 
-    const validationErrors = validateForm(formData, files);
+    const validationErrors = validateForm(formData, files, consentAccepted);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       setStatus({ type: "error", message: "Please fix the highlighted fields before submitting." });
@@ -121,6 +124,7 @@ export default function Home() {
       setStatus({ type: "success", message: "Application submitted successfully. We'll be in touch shortly." });
       setFormData(initialState);
       setFiles({ payment_screenshot: null, photograph: null });
+      setConsentAccepted(false);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
       console.error(err);
@@ -159,8 +163,7 @@ export default function Home() {
         <div className="hero-inner">
           <span className="hero-badge">Admissions Open</span>
           <h1>Student Registration Form</h1>
-          <p className="hero-desc">
-            Apply for Medical, Dental, and Post Graduate programmes. Please fill in all details
+          <p className="hero-desc">Please fill in all details
             carefully as per your official documents. Fields marked with * are mandatory.
           </p>
           <div className="hero-stats">
@@ -448,14 +451,57 @@ export default function Home() {
             </div>
           </section>
 
+          <div className={`consent-field ${errors.consent ? "error" : ""}`}>
+            <label className="consent-label">
+              <input
+                type="checkbox"
+                name="consent"
+                checked={consentAccepted}
+                onChange={(event) => {
+                  setConsentAccepted(event.target.checked);
+                  if (errors.consent) {
+                    setErrors((prev) => ({ ...prev, consent: undefined }));
+                  }
+                }}
+              />
+              <span>
+                I have read the{" "}
+                <button
+                  type="button"
+                  className="consent-link"
+                  onClick={() => setDeclarationOpen(true)}
+                >
+                  Undertaking and Declaration
+                </button>{" "}
+                and agree to the terms and conditions. <span className="required">*</span>
+              </span>
+            </label>
+            {err("consent")}
+          </div>
+
           <div className="submit-row">
-            <button type="submit" className="primary" disabled={submitting}>
+            {!consentAccepted && (
+              <p className="submit-hint" role="status">
+                Please read and accept the Undertaking and Declaration before submitting the application.
+              </p>
+            )}
+            <button
+              type="submit"
+              className="primary"
+              disabled={submitting || !consentAccepted}
+              aria-disabled={submitting || !consentAccepted}
+            >
               {submitting && <span className="spinner" aria-hidden="true" />}
               {submitting ? "Submitting..." : "Submit Application"}
             </button>
           </div>
         </form>
       </main>
+
+      <DeclarationModal
+        isOpen={declarationOpen}
+        onClose={() => setDeclarationOpen(false)}
+      />
     </>
   );
 }

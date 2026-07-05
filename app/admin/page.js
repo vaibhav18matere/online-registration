@@ -168,7 +168,11 @@ export default function AdminPage() {
           <span>Loading submissions...</span>
         </div>
       ) : (
-        <div className="admin-table-wrap">
+        <>
+          <p className="table-scroll-hint">
+            Each registration appears as a card below. Use a wider screen for the full table view.
+          </p>
+          <div className="admin-table-wrap">
           <table className="admin-table">
             <thead>
               <tr>
@@ -189,22 +193,22 @@ export default function AdminPage() {
             <tbody>
               {registrations.map((r) => (
                 <tr key={r.id}>
-                  <td>{new Date(r.created_at).toLocaleString()}</td>
-                  <td>{r.full_name}</td>
-                  <td>{r.mobile}</td>
-                  <td>{r.email}</td>
-                  <td><span className="course-tag">{r.course}</span></td>
-                  <td>{r.city}, {r.state}</td>
-                  <td>{r.pcb_total ?? "-"}</td>
-                  <td>{r.neet_score ?? "-"}</td>
-                  <td>{r.payment_mode}</td>
-                  <td>{r.utr_number ?? "-"}</td>
-                  <td>
+                  <td data-label="Submitted">{new Date(r.created_at).toLocaleString()}</td>
+                  <td data-label="Full Name">{r.full_name}</td>
+                  <td data-label="Mobile">{r.mobile}</td>
+                  <td data-label="Email">{r.email}</td>
+                  <td data-label="Course"><span className="course-tag">{r.course}</span></td>
+                  <td data-label="City / State">{r.city}, {r.state}</td>
+                  <td data-label="PCB Total">{r.pcb_total ?? "-"}</td>
+                  <td data-label="NEET">{r.neet_score ?? "-"}</td>
+                  <td data-label="Payment">{r.payment_mode}</td>
+                  <td data-label="UTR">{r.utr_number ?? "-"}</td>
+                  <td data-label="Screenshot">
                     {r.payment_screenshot_url ? (
                       <a href={r.payment_screenshot_url} target="_blank" rel="noreferrer">View</a>
                     ) : "-"}
                   </td>
-                  <td>
+                  <td data-label="Photo">
                     {r.photograph_url ? (
                       <a href={r.photograph_url} target="_blank" rel="noreferrer">View</a>
                     ) : "-"}
@@ -222,6 +226,7 @@ export default function AdminPage() {
             </tbody>
           </table>
         </div>
+        </>
       )}
     </main>
   );
