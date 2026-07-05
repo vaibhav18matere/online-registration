@@ -3,8 +3,8 @@ import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
 
 export const metadata = {
-  title: "Sunder Educational Consultants | Student Registration",
-  description: "Apply for Medical, Dental, and Post Graduate admissions.",
+  title: "KRSU Online Registration Portal",
+  description: "A new stage of transformation",
 };
 
 export const viewport = {

@@ -12,7 +12,7 @@ export function SiteHeader() {
         <a href="/" className="site-brand">
           <span className="site-brand-mark" aria-hidden="true">SEC</span>
           <span className="site-brand-text">
-            <span className="site-brand-name">Dr. Rasal&apos;s Sunder Educational Consultants</span>
+            <span className="site-brand-name">KRSU Online Registration Portal</span>
             <span className="site-brand-tagline">Admissions · Medical · Dental · Post Graduate</span>
           </span>
         </a>
