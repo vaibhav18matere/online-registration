@@ -7,6 +7,36 @@ import { ADMISSION_DOCUMENTS, createInitialDocumentFiles } from "../lib/document
 import { DeclarationModal } from "../components/DeclarationModal";
 import { DEFAULT_NATIONALITY, getLatestAllowedBirthDate, RELIGIONS } from "../lib/formOptions";
 import { getCitiesForState, INDIAN_STATES } from "../lib/indiaLocations";
+import {
+  bannerErrorClass,
+  bannerSuccessClass,
+  errorTextClass,
+  fieldClass,
+  fieldFullClass,
+  fileDropClass,
+  gridClass,
+  inputClassName,
+  labelClass,
+  mergeClasses,
+  primaryButtonClass,
+  radioOptionClass,
+  radioRowClass,
+  sectionBodyClass,
+  sectionClass,
+  sectionHeaderClass,
+  sectionNumberClass,
+  sectionSubClass,
+  sectionTitleClass,
+  spinnerClass,
+  marksTableBodyClass,
+  marksTableClass,
+  marksTableHeadCellClass,
+  marksTableHeadClass,
+  marksTableInputCellClass,
+  marksTableSubjectCellClass,
+  marksTableValueCellClass,
+  marksTableWrapClass,
+} from "../lib/uiClasses";
 
 const initialDocumentFiles = createInitialDocumentFiles();
 
@@ -172,8 +202,12 @@ export default function Home() {
     }
   }
 
-  const err = (field) => errors[field] && <div className="error-text">{errors[field]}</div>;
-  const cls = (field) => (errors[field] ? "error" : "");
+  function renderFieldError(field) {
+    if (!errors[field]) {
+      return null;
+    }
+    return <div className={errorTextClass}>{errors[field]}</div>;
+  }
   const latestAllowedBirthDate = getLatestAllowedBirthDate();
   const cityOptions = getCitiesForState(formData.state);
 
@@ -187,11 +221,11 @@ export default function Home() {
 
   function sectionHeader(step, title, subtitle) {
     return (
-      <div className="section-header">
-        <span className="section-number">{step}</span>
-        <div className="section-titles">
-          <h2>{title}</h2>
-          {subtitle && <p className="section-sub">{subtitle}</p>}
+      <div className={sectionHeaderClass}>
+        <span className={sectionNumberClass}>{step}</span>
+        <div>
+          <h2 className={sectionTitleClass}>{title}</h2>
+          {subtitle && <p className={sectionSubClass}>{subtitle}</p>}
         </div>
       </div>
     );
@@ -199,102 +233,119 @@ export default function Home() {
 
   return (
     <>
-      <div className="hero">
-        <div className="hero-inner">
-          <span className="hero-badge">Admissions Open</span>
-          <h1>Student Registration Form</h1>
-          <p className="hero-desc">Please fill in all details
-            carefully as per your official documents. Fields marked with * are mandatory.
+      <div className="relative overflow-hidden bg-yellow-soft text-black -mx-4 sm:-mx-5 lg:-mx-6 mb-5 sm:mb-9 px-4 sm:px-5 lg:px-6 py-7 sm:py-9 lg:py-12 border-b-2 border-line">
+        <div
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_90%_10%,rgba(196,30,58,0.06)_0%,transparent_40%),radial-gradient(circle_at_5%_95%,rgba(240,208,96,0.4)_0%,transparent_45%)]"
+          aria-hidden="true"
+        />
+        <div className="relative max-w-[900px] mx-auto">
+          <span className="inline-block text-[11px] font-bold tracking-widest uppercase text-red bg-white border-[1.5px] border-red px-3 py-1 rounded-full mb-3.5">
+            Admissions Open
+          </span>
+          <h1 className="text-red text-[clamp(24px,6vw,38px)] mb-3">Student Registration Form</h1>
+          <p className="text-black-soft text-[clamp(14px,3.5vw,15px)] max-w-[560px] m-0 mb-5 sm:mb-7 leading-relaxed">
+            Please fill in all details carefully as per your official documents. Fields marked with
+            * are mandatory.
           </p>
         </div>
       </div>
 
-      <main className="page">
+      <main className="max-w-[900px] mx-auto w-full px-4 sm:px-5 lg:px-6 pb-[max(clamp(40px,8vw,64px),env(safe-area-inset-bottom,0px))]">
         {status && (
-          <div className={`banner ${status.type}`} role="alert">
+          <div
+            className={status.type === "success" ? bannerSuccessClass : bannerErrorClass}
+            role="alert"
+          >
             {status.message}
           </div>
         )}
 
-        <nav className="form-nav" aria-label="Form sections">
+        <nav
+          className="flex flex-nowrap gap-2 mb-5 sm:mb-7 p-3 bg-white border-[1.5px] border-line rounded-xl shadow-sm overflow-x-auto snap-x snap-proximity [scrollbar-width:thin] [-webkit-overflow-scrolling:touch]"
+          aria-label="Form sections"
+        >
           {formSections.map((section) => (
-            <a key={section.id} href={`#${section.id}`}>
+            <a
+              key={section.id}
+              href={`#${section.id}`}
+              className="shrink-0 text-[clamp(11px,2.8vw,12px)] font-semibold text-black px-3.5 py-2 rounded-full bg-yellow-bg border border-line snap-start transition-[background,border-color,color] hover:bg-red hover:border-red hover:text-white"
+            >
               {section.step}. {section.label}
             </a>
           ))}
         </nav>
 
         <form id="registration-form" onSubmit={handleSubmit} noValidate>
-          <section id="personal" className="section">
+          <section id="personal" className={sectionClass}>
             {sectionHeader(1, "Personal Details", "As per your official documents")}
-            <div className="section-body">
-          <div className="grid">
-            <div className="field full">
-              <label>Full Name <span className="required">*</span></label>
-              <input type="text" name="full_name" className={cls("full_name")} value={formData.full_name} onChange={handleChange} placeholder="First Middle Last" />
-              {err("full_name")}
+            <div className={sectionBodyClass}>
+          <div className={gridClass}>
+            <div className={mergeClasses(fieldClass, fieldFullClass)}>
+              <label className={labelClass}>Full Name <span className="text-red ml-0.5">*</span></label>
+              <input type="text" name="full_name" className={inputClassName("full_name", errors)} value={formData.full_name} onChange={handleChange} placeholder="First Middle Last" />
+              {renderFieldError("full_name")}
             </div>
 
-            <div className="field">
-              <label>Father's / Husband's Name <span className="required">*</span></label>
-              <input type="text" name="father_name" className={cls("father_name")} value={formData.father_name} onChange={handleChange} />
-              {err("father_name")}
+            <div className={fieldClass}>
+              <label className={labelClass}>Father's / Husband's Name <span className="text-red ml-0.5">*</span></label>
+              <input type="text" name="father_name" className={inputClassName("father_name", errors)} value={formData.father_name} onChange={handleChange} />
+              {renderFieldError("father_name")}
             </div>
 
-            <div className="field">
-              <label>Mother's Name <span className="required">*</span></label>
-              <input type="text" name="mother_name" className={cls("mother_name")} value={formData.mother_name} onChange={handleChange} />
-              {err("mother_name")}
+            <div className={fieldClass}>
+              <label className={labelClass}>Mother's Name <span className="text-red ml-0.5">*</span></label>
+              <input type="text" name="mother_name" className={inputClassName("mother_name", errors)} value={formData.mother_name} onChange={handleChange} />
+              {renderFieldError("mother_name")}
             </div>
 
-            <div className="field">
-              <label>Date of Birth <span className="required">*</span></label>
+            <div className={fieldClass}>
+              <label className={labelClass}>Date of Birth <span className="text-red ml-0.5">*</span></label>
               <input
                 type="date"
                 name="dob"
-                className={cls("dob")}
+                className={inputClassName("dob", errors)}
                 value={formData.dob}
                 onChange={handleChange}
                 max={latestAllowedBirthDate}
               />
-              {err("dob")}
+              {renderFieldError("dob")}
             </div>
 
-            <div className="field">
-              <label>Birth Place <span className="required">*</span></label>
-              <input type="text" name="birth_place" className={cls("birth_place")} value={formData.birth_place} onChange={handleChange} />
-              {err("birth_place")}
+            <div className={fieldClass}>
+              <label className={labelClass}>Birth Place <span className="text-red ml-0.5">*</span></label>
+              <input type="text" name="birth_place" className={inputClassName("birth_place", errors)} value={formData.birth_place} onChange={handleChange} />
+              {renderFieldError("birth_place")}
             </div>
 
-            <div className="field">
-              <label>Sex <span className="required">*</span></label>
-              <div className="radio-row">
+            <div className={fieldClass}>
+              <label className={labelClass}>Sex <span className="text-red ml-0.5">*</span></label>
+              <div className={radioRowClass}>
                 {["Male", "Female"].map((opt) => (
-                  <label key={opt} className="radio-option">
+                  <label key={opt} className={radioOptionClass}>
                     <input type="radio" name="sex" value={opt} checked={formData.sex === opt} onChange={handleChange} />
                     {opt}
                   </label>
                 ))}
               </div>
-              {err("sex")}
+              {renderFieldError("sex")}
             </div>
 
-            <div className="field">
-              <label>Nationality <span className="required">*</span></label>
+            <div className={fieldClass}>
+              <label className={labelClass}>Nationality <span className="text-red ml-0.5">*</span></label>
               <input
                 type="text"
                 name="nationality"
-                className={cls("nationality")}
+                className={inputClassName("nationality", errors)}
                 value={formData.nationality}
                 onChange={handleChange}
                 readOnly
               />
-              {err("nationality")}
+              {renderFieldError("nationality")}
             </div>
 
-            <div className="field">
-              <label>Religion</label>
-              <select name="religion" value={formData.religion} onChange={handleChange}>
+            <div className={fieldClass}>
+              <label className={labelClass}>Religion</label>
+              <select name="religion" className={inputClassName("religion", errors)} value={formData.religion} onChange={handleChange}>
                 <option value="">Select religion</option>
                 {RELIGIONS.map((religion) => (
                   <option key={religion} value={religion}>
@@ -304,26 +355,26 @@ export default function Home() {
               </select>
             </div>
 
-            <div className="field">
-              <label>Caste</label>
-              <input type="text" name="caste" value={formData.caste} onChange={handleChange} />
+            <div className={fieldClass}>
+              <label className={labelClass}>Caste</label>
+              <input type="text" name="caste" className={inputClassName("caste", errors)} value={formData.caste} onChange={handleChange} />
             </div>
 
-            <div className="field">
-              <label>Sub Caste</label>
-              <input type="text" name="sub_caste" value={formData.sub_caste} onChange={handleChange} />
+            <div className={fieldClass}>
+              <label className={labelClass}>Sub Caste</label>
+              <input type="text" name="sub_caste" className={inputClassName("sub_caste", errors)} value={formData.sub_caste} onChange={handleChange} />
             </div>
           </div>
             </div>
           </section>
 
-          <section id="contact" className="section">
+          <section id="contact" className={sectionClass}>
             {sectionHeader(2, "Contact Details", "Correspondence address and how we can reach you")}
-            <div className="section-body">
-          <div className="grid">
-            <div className="field">
-              <label>State <span className="required">*</span></label>
-              <select name="state" className={cls("state")} value={formData.state} onChange={handleChange}>
+            <div className={sectionBodyClass}>
+          <div className={gridClass}>
+            <div className={fieldClass}>
+              <label className={labelClass}>State <span className="text-red ml-0.5">*</span></label>
+              <select name="state" className={inputClassName("state", errors)} value={formData.state} onChange={handleChange}>
                 <option value="">Select state</option>
                 {INDIAN_STATES.map((stateName) => (
                   <option key={stateName} value={stateName}>
@@ -331,14 +382,14 @@ export default function Home() {
                   </option>
                 ))}
               </select>
-              {err("state")}
+              {renderFieldError("state")}
             </div>
 
-            <div className="field">
-              <label>City <span className="required">*</span></label>
+            <div className={fieldClass}>
+              <label className={labelClass}>City <span className="text-red ml-0.5">*</span></label>
               <select
                 name="city"
-                className={cls("city")}
+                className={inputClassName("city", errors)}
                 value={formData.city}
                 onChange={handleChange}
                 disabled={!formData.state}
@@ -350,15 +401,15 @@ export default function Home() {
                   </option>
                 ))}
               </select>
-              {err("city")}
+              {renderFieldError("city")}
             </div>
 
-            <div className="field">
-              <label>PIN Code <span className="required">*</span></label>
+            <div className={fieldClass}>
+              <label className={labelClass}>PIN Code <span className="text-red ml-0.5">*</span></label>
               <input
                 type="number"
                 name="pin_code"
-                className={cls("pin_code")}
+                className={inputClassName("pin_code", errors)}
                 value={formData.pin_code}
                 onChange={handlePinCodeChange}
                 min={100000}
@@ -366,49 +417,49 @@ export default function Home() {
                 inputMode="numeric"
                 placeholder="6-digit PIN code"
               />
-              {err("pin_code")}
+              {renderFieldError("pin_code")}
             </div>
 
-            <div className="field">
-              <label>Mobile Number <span className="required">*</span></label>
-              <input type="tel" name="mobile" className={cls("mobile")} value={formData.mobile} onChange={handleChange} maxLength={10} inputMode="numeric" placeholder="10-digit mobile number" />
-              {err("mobile")}
+            <div className={fieldClass}>
+              <label className={labelClass}>Mobile Number <span className="text-red ml-0.5">*</span></label>
+              <input type="tel" name="mobile" className={inputClassName("mobile", errors)} value={formData.mobile} onChange={handleChange} maxLength={10} inputMode="numeric" placeholder="10-digit mobile number" />
+              {renderFieldError("mobile")}
             </div>
 
-            <div className="field">
-              <label>Father's Mobile</label>
-              <input type="tel" name="father_mobile" className={cls("father_mobile")} value={formData.father_mobile} onChange={handleChange} maxLength={10} inputMode="numeric" />
-              {err("father_mobile")}
+            <div className={fieldClass}>
+              <label className={labelClass}>Father's Mobile</label>
+              <input type="tel" name="father_mobile" className={inputClassName("father_mobile", errors)} value={formData.father_mobile} onChange={handleChange} maxLength={10} inputMode="numeric" />
+              {renderFieldError("father_mobile")}
             </div>
 
-            <div className="field full">
-              <label>Email <span className="required">*</span></label>
-              <input type="email" name="email" className={cls("email")} value={formData.email} onChange={handleChange} placeholder="you@example.com" />
-              {err("email")}
+            <div className={mergeClasses(fieldClass, fieldFullClass)}>
+              <label className={labelClass}>Email <span className="text-red ml-0.5">*</span></label>
+              <input type="email" name="email" className={inputClassName("email", errors)} value={formData.email} onChange={handleChange} placeholder="you@example.com" />
+              {renderFieldError("email")}
             </div>
 
-            <div className="field full">
-              <label>Address <span className="required">*</span></label>
-              <input type="text" name="address" className={cls("address")} value={formData.address} onChange={handleChange} />
-              {err("address")}
+            <div className={mergeClasses(fieldClass, fieldFullClass)}>
+              <label className={labelClass}>Address <span className="text-red ml-0.5">*</span></label>
+              <input type="text" name="address" className={inputClassName("address", errors)} value={formData.address} onChange={handleChange} />
+              {renderFieldError("address")}
             </div>
           </div>
             </div>
           </section>
 
-          <section id="academic" className="section">
+          <section id="academic" className={sectionClass}>
             {sectionHeader(3, "Qualifying Examination (10+2)", "Enter marks obtained out of 100 for each subject")}
-            <div className="section-body">
-          <div className="marks-table-wrap">
-          <table className="marks-table">
-            <thead>
+            <div className={sectionBodyClass}>
+          <div className={marksTableWrapClass}>
+          <table className={marksTableClass}>
+            <thead className={marksTableHeadClass}>
               <tr>
-                <th>Subject</th>
-                <th>Max Marks</th>
-                <th>Marks Obtained</th>
+                <th className={marksTableHeadCellClass}>Subject</th>
+                <th className={marksTableHeadCellClass}>Max Marks</th>
+                <th className={marksTableHeadCellClass}>Marks Obtained</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className={marksTableBodyClass}>
               {[
                 ["Physics", "physics_marks"],
                 ["Chemistry", "chemistry_marks"],
@@ -416,127 +467,134 @@ export default function Home() {
                 ["English", "english_marks"],
               ].map(([label, field]) => (
                 <tr key={field}>
-                  <td data-label="Subject">{label}</td>
-                  <td data-label="Max Marks">100</td>
-                  <td data-label="Marks Obtained">
+                  <td className={marksTableSubjectCellClass}>{label}</td>
+                  <td className={marksTableValueCellClass} data-label="Max Marks">100</td>
+                  <td className={marksTableInputCellClass} data-label="Marks Obtained">
                     <input
                       type="number"
                       name={field}
-                      className={cls(field)}
+                      className={inputClassName(field, errors)}
                       value={formData[field]}
                       onChange={handleChange}
                       min={0}
                       max={100}
                     />
-                    {err(field)}
+                    {renderFieldError(field)}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
           </div>
-          <div className="pcb-total">
+          <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-2 bg-red text-white px-4 py-3.5 rounded-lg font-semibold text-[clamp(13px,3.5vw,14px)] mt-1">
             <span>PCB Grand Total</span>
-            <span>{pcbTotal} / 300</span>
+            <span className="font-serif text-[clamp(16px,4vw,18px)] text-yellow-soft">{pcbTotal} / 300</span>
           </div>
 
-          <div className="field neet-field">
-            <label>NEET Score (out of 720)</label>
-            <input type="number" name="neet_score" className={cls("neet_score")} value={formData.neet_score} onChange={handleChange} min={0} max={720} placeholder="Enter NEET score" />
-            {err("neet_score")}
+          <div className={mergeClasses(fieldClass, "mt-5 w-full sm:max-w-[280px]")}>
+            <label className={labelClass}>NEET Score (out of 720)</label>
+            <input type="number" name="neet_score" className={inputClassName("neet_score", errors)} value={formData.neet_score} onChange={handleChange} min={0} max={720} placeholder="Enter NEET score" />
+            {renderFieldError("neet_score")}
           </div>
             </div>
           </section>
 
-          <section id="payment" className="section">
+          <section id="payment" className={sectionClass}>
             {sectionHeader(4, "Payment Details", "Upload proof of payment to complete your application")}
-            <div className="section-body">
-          <div className="grid">
-            <div className="field">
-              <label>Payment Mode <span className="required">*</span></label>
-              <div className="radio-row">
+            <div className={sectionBodyClass}>
+          <div className={gridClass}>
+            <div className={fieldClass}>
+              <label className={labelClass}>Payment Mode <span className="text-red ml-0.5">*</span></label>
+              <div className={radioRowClass}>
                 {["Online", "Cash", "DD"].map((opt) => (
-                  <label key={opt} className="radio-option">
+                  <label key={opt} className={radioOptionClass}>
                     <input type="radio" name="payment_mode" value={opt} checked={formData.payment_mode === opt} onChange={handleChange} />
                     {opt}
                   </label>
                 ))}
               </div>
-              {err("payment_mode")}
+              {renderFieldError("payment_mode")}
             </div>
 
             {formData.payment_mode === "Online" && (
-              <div className="field">
-                <label>Online UTR Number <span className="required">*</span></label>
-                <input type="text" name="utr_number" className={cls("utr_number")} value={formData.utr_number} onChange={handleChange} />
-                {err("utr_number")}
+              <div className={fieldClass}>
+                <label className={labelClass}>Online UTR Number <span className="text-red ml-0.5">*</span></label>
+                <input type="text" name="utr_number" className={inputClassName("utr_number", errors)} value={formData.utr_number} onChange={handleChange} />
+                {renderFieldError("utr_number")}
               </div>
             )}
 
-            <div className="field full">
-              <label>Payment Screenshot <span className="required">*</span></label>
-              <label className={`file-drop ${files.payment_screenshot ? "has-file" : ""}`}>
-                <input type="file" name="payment_screenshot" accept="image/*,application/pdf" onChange={handleFileChange} />
+            <div className={mergeClasses(fieldClass, fieldFullClass)}>
+              <label className={labelClass}>Payment Screenshot <span className="text-red ml-0.5">*</span></label>
+              <label className={fileDropClass(Boolean(files.payment_screenshot))}>
+                <input type="file" name="payment_screenshot" accept="image/*,application/pdf" onChange={handleFileChange} className="hidden" />
                 {files.payment_screenshot ? (
-                  <div className="filename">{files.payment_screenshot.name}</div>
+                  <div className="text-sm text-success font-semibold break-words">{files.payment_screenshot.name}</div>
                 ) : (
                   <>
-                    <div className="file-drop-icon" aria-hidden="true">📄</div>
-                    <div className="file-drop-title">Click to upload payment screenshot</div>
-                    <div className="hint">JPG, PNG, or PDF · up to 5MB</div>
+                    <div className="text-[clamp(24px,6vw,28px)] mb-2 opacity-70" aria-hidden="true">📄</div>
+                    <div className="text-sm font-semibold text-black">Click to upload payment screenshot</div>
+                    <div className="text-xs text-text-muted mt-1.5">JPG, PNG, or PDF · up to 5MB</div>
                   </>
                 )}
               </label>
-              {err("payment_screenshot")}
+              {renderFieldError("payment_screenshot")}
             </div>
           </div>
             </div>
           </section>
 
-          <section id="documents" className="section">
+          <section id="documents" className={sectionClass}>
             {sectionHeader(5, "Upload Documents", "Documents for admission — fields marked with * are mandatory")}
-            <div className="section-body">
-          <div className="grid">
+            <div className={sectionBodyClass}>
+          <div className={gridClass}>
             {ADMISSION_DOCUMENTS.map((doc) => (
-              <div key={doc.name} className="field full">
-                <label>
+              <div key={doc.name} className={mergeClasses(fieldClass, fieldFullClass)}>
+                <label className={labelClass}>
                   {doc.label}
                   {doc.required ? (
-                    <span className="required"> *</span>
+                    <span className="text-red ml-0.5"> *</span>
                   ) : (
-                    <span className="optional-hint"> ({doc.optionalHint})</span>
+                    <span className="text-text-muted font-normal text-[0.92em]"> ({doc.optionalHint})</span>
                   )}
                 </label>
-                <label className={`file-drop ${files[doc.name] ? "has-file" : ""}`}>
+                <label className={fileDropClass(Boolean(files[doc.name]))}>
                   <input
                     type="file"
                     name={doc.name}
                     accept={doc.accept}
                     onChange={handleFileChange}
+                    className="hidden"
                   />
                   {files[doc.name] ? (
-                    <div className="filename">{files[doc.name].name}</div>
+                    <div className="text-sm text-success font-semibold break-words">{files[doc.name].name}</div>
                   ) : (
                     <>
-                      <div className="file-drop-icon" aria-hidden="true">📄</div>
-                      <div className="file-drop-title">Click to upload {doc.label.toLowerCase()}</div>
-                      <div className="hint">{doc.hint}</div>
+                      <div className="text-[clamp(24px,6vw,28px)] mb-2 opacity-70" aria-hidden="true">📄</div>
+                      <div className="text-sm font-semibold text-black">Click to upload {doc.label.toLowerCase()}</div>
+                      <div className="text-xs text-text-muted mt-1.5">{doc.hint}</div>
                     </>
                   )}
                 </label>
-                {err(doc.name)}
+                {renderFieldError(doc.name)}
               </div>
             ))}
           </div>
             </div>
           </section>
 
-          <div className={`consent-field ${errors.consent ? "error" : ""}`}>
-            <label className="consent-label">
+          <div
+            className={mergeClasses(
+              "mt-2 p-4 sm:p-5 bg-white border-[1.5px] border-line rounded-xl shadow-sm",
+              errors.consent && "border-error bg-error-bg"
+            )}
+          >
+            <label className="flex items-start gap-3 mb-0 text-[clamp(13px,3.5vw,14px)] font-medium leading-relaxed cursor-pointer">
               <input
                 type="checkbox"
                 name="consent"
                 checked={consentAccepted}
+                className="w-[18px] h-[18px] min-h-[18px] mt-0.5 shrink-0 accent-red cursor-pointer"
                 onChange={(event) => {
                   setConsentAccepted(event.target.checked);
                   if (errors.consent) {
@@ -548,30 +606,30 @@ export default function Home() {
                 I have read the{" "}
                 <button
                   type="button"
-                  className="consent-link"
+                  className="inline p-0 border-0 bg-transparent text-red font-semibold underline underline-offset-2 cursor-pointer font-[inherit] hover:text-red-dark"
                   onClick={() => setDeclarationOpen(true)}
                 >
                   Undertaking and Declaration
                 </button>{" "}
-                and agree to the terms and conditions. <span className="required">*</span>
+                and agree to the terms and conditions. <span className="text-red ml-0.5">*</span>
               </span>
             </label>
-            {err("consent")}
+            {renderFieldError("consent")}
           </div>
 
-          <div className="submit-row">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-end gap-3 mt-2 p-4 sm:p-6 bg-white border-[1.5px] border-line rounded-xl shadow-sm">
             {!consentAccepted && (
-              <p className="submit-hint" role="status">
+              <p className="m-0 p-3 rounded-lg bg-yellow-bg border border-yellow-border text-black text-[clamp(13px,3.5vw,14px)] leading-normal md:flex-1" role="status">
                 Please read and accept the Undertaking and Declaration before submitting the application.
               </p>
             )}
             <button
               type="submit"
-              className="primary"
+              className={primaryButtonClass}
               disabled={submitting || !consentAccepted}
               aria-disabled={submitting || !consentAccepted}
             >
-              {submitting && <span className="spinner" aria-hidden="true" />}
+              {submitting && <span className={spinnerClass} aria-hidden="true" />}
               {submitting ? "Submitting..." : "Submit Application"}
             </button>
           </div>

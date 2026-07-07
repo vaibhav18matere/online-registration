@@ -26,7 +26,7 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body>
-        <div className="site-shell">
+        <div className="min-h-screen min-h-dvh flex flex-col bg-yellow-bg">
           <SiteHeader />
           {children}
           <SiteFooter />
