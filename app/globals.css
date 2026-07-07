@@ -302,12 +302,6 @@ img {
   line-height: 1.65;
 }
 
-.hero-stats {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 10px;
-}
-
 .hero-stat {
   background: var(--white);
   border: 1.5px solid var(--line);
@@ -514,6 +508,18 @@ select {
 
 input::placeholder {
   color: #888;
+}
+
+input:read-only {
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+select:disabled {
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: not-allowed;
 }
 
 input:hover:not(:disabled),
@@ -1259,9 +1265,6 @@ table.admin-table .empty-row td::before {
 /* ── Mobile-first breakpoints (enhance for larger screens) ── */
 
 @media (min-width: 480px) {
-  .hero-stats {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
 
   .radio-option {
     flex: 1 1 calc(50% - 5px);

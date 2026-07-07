@@ -5,6 +5,8 @@ import { getSupabase } from "../lib/supabase";
 import { validateForm } from "../lib/validation";
 import { ADMISSION_DOCUMENTS, createInitialDocumentFiles } from "../lib/documents";
 import { DeclarationModal } from "../components/DeclarationModal";
+import { DEFAULT_NATIONALITY, getLatestAllowedBirthDate, RELIGIONS } from "../lib/formOptions";
+import { getCitiesForState, INDIAN_STATES } from "../lib/indiaLocations";
 
 const initialDocumentFiles = createInitialDocumentFiles();
 
@@ -19,7 +21,7 @@ const initialState = {
   father_mobile: "",
   mobile: "",
   sex: "",
-  nationality: "",
+  nationality: DEFAULT_NATIONALITY,
   email: "",
   dob: "",
   birth_place: "",
@@ -49,8 +51,21 @@ export default function Home() {
 
   function handleChange(e) {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name === "state") {
+      setFormData((prev) => ({ ...prev, state: value, city: "" }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: undefined }));
+    if (name === "state" && errors.city) {
+      setErrors((prev) => ({ ...prev, city: undefined }));
+    }
+  }
+
+  function handlePinCodeChange(e) {
+    const digitsOnly = e.target.value.replace(/\D/g, "").slice(0, 6);
+    setFormData((prev) => ({ ...prev, pin_code: digitsOnly }));
+    if (errors.pin_code) setErrors((prev) => ({ ...prev, pin_code: undefined }));
   }
 
   function handleFileChange(e) {
@@ -159,6 +174,8 @@ export default function Home() {
 
   const err = (field) => errors[field] && <div className="error-text">{errors[field]}</div>;
   const cls = (field) => (errors[field] ? "error" : "");
+  const latestAllowedBirthDate = getLatestAllowedBirthDate();
+  const cityOptions = getCitiesForState(formData.state);
 
   const formSections = [
     { id: "personal", label: "Personal", step: 1 },
@@ -189,20 +206,6 @@ export default function Home() {
           <p className="hero-desc">Please fill in all details
             carefully as per your official documents. Fields marked with * are mandatory.
           </p>
-          <div className="hero-stats">
-            <div className="hero-stat">
-              <span className="hero-stat-label">Programmes</span>
-              <span className="hero-stat-value">Medical · Dental · PG</span>
-            </div>
-            <div className="hero-stat">
-              <span className="hero-stat-label">Examination</span>
-              <span className="hero-stat-value">10+2 &amp; NEET</span>
-            </div>
-            <div className="hero-stat">
-              <span className="hero-stat-label">Processing</span>
-              <span className="hero-stat-value">Online Application</span>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -246,7 +249,14 @@ export default function Home() {
 
             <div className="field">
               <label>Date of Birth <span className="required">*</span></label>
-              <input type="date" name="dob" className={cls("dob")} value={formData.dob} onChange={handleChange} />
+              <input
+                type="date"
+                name="dob"
+                className={cls("dob")}
+                value={formData.dob}
+                onChange={handleChange}
+                max={latestAllowedBirthDate}
+              />
               {err("dob")}
             </div>
 
@@ -271,13 +281,27 @@ export default function Home() {
 
             <div className="field">
               <label>Nationality <span className="required">*</span></label>
-              <input type="text" name="nationality" className={cls("nationality")} value={formData.nationality} onChange={handleChange} placeholder="e.g. Indian" />
+              <input
+                type="text"
+                name="nationality"
+                className={cls("nationality")}
+                value={formData.nationality}
+                onChange={handleChange}
+                readOnly
+              />
               {err("nationality")}
             </div>
 
             <div className="field">
               <label>Religion</label>
-              <input type="text" name="religion" value={formData.religion} onChange={handleChange} />
+              <select name="religion" value={formData.religion} onChange={handleChange}>
+                <option value="">Select religion</option>
+                {RELIGIONS.map((religion) => (
+                  <option key={religion} value={religion}>
+                    {religion}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className="field">
@@ -297,28 +321,52 @@ export default function Home() {
             {sectionHeader(2, "Contact Details", "Correspondence address and how we can reach you")}
             <div className="section-body">
           <div className="grid">
-            <div className="field full">
-              <label>Address <span className="required">*</span></label>
-              <input type="text" name="address" className={cls("address")} value={formData.address} onChange={handleChange} />
-              {err("address")}
+            <div className="field">
+              <label>State <span className="required">*</span></label>
+              <select name="state" className={cls("state")} value={formData.state} onChange={handleChange}>
+                <option value="">Select state</option>
+                {INDIAN_STATES.map((stateName) => (
+                  <option key={stateName} value={stateName}>
+                    {stateName}
+                  </option>
+                ))}
+              </select>
+              {err("state")}
             </div>
 
             <div className="field">
               <label>City <span className="required">*</span></label>
-              <input type="text" name="city" className={cls("city")} value={formData.city} onChange={handleChange} />
+              <select
+                name="city"
+                className={cls("city")}
+                value={formData.city}
+                onChange={handleChange}
+                disabled={!formData.state}
+              >
+                <option value="">{formData.state ? "Select city" : "Select state first"}</option>
+                {cityOptions.map((cityName) => (
+                  <option key={cityName} value={cityName}>
+                    {cityName}
+                  </option>
+                ))}
+              </select>
               {err("city")}
             </div>
 
             <div className="field">
               <label>PIN Code <span className="required">*</span></label>
-              <input type="text" name="pin_code" className={cls("pin_code")} value={formData.pin_code} onChange={handleChange} maxLength={6} inputMode="numeric" />
+              <input
+                type="number"
+                name="pin_code"
+                className={cls("pin_code")}
+                value={formData.pin_code}
+                onChange={handlePinCodeChange}
+                min={100000}
+                max={999999}
+                inputMode="numeric"
+                placeholder="6-digit PIN code"
+              />
               {err("pin_code")}
-            </div>
-
-            <div className="field">
-              <label>State <span className="required">*</span></label>
-              <input type="text" name="state" className={cls("state")} value={formData.state} onChange={handleChange} />
-              {err("state")}
             </div>
 
             <div className="field">
@@ -337,6 +385,12 @@ export default function Home() {
               <label>Email <span className="required">*</span></label>
               <input type="email" name="email" className={cls("email")} value={formData.email} onChange={handleChange} placeholder="you@example.com" />
               {err("email")}
+            </div>
+
+            <div className="field full">
+              <label>Address <span className="required">*</span></label>
+              <input type="text" name="address" className={cls("address")} value={formData.address} onChange={handleChange} />
+              {err("address")}
             </div>
           </div>
             </div>

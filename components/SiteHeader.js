@@ -13,7 +13,7 @@ export function SiteHeader() {
           <span className="site-brand-mark" aria-hidden="true">KRSU</span>
           <span className="site-brand-text">
             <span className="site-brand-name">KRSU Online Registration Portal</span>
-            <span className="site-brand-tagline">Admissions · Medical · Dental · Post Graduate</span>
+            <span className="site-brand-tagline">Medical Admissions </span>
           </span>
         </a>
         <nav className="site-nav" aria-label="Site">
