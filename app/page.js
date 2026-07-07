@@ -23,7 +23,6 @@ const initialState = {
   religion: "",
   caste: "",
   sub_caste: "",
-  course: "",
   physics_marks: "",
   chemistry_marks: "",
   biology_marks: "",
@@ -57,8 +56,7 @@ export default function Home() {
   const pcbTotal =
     (Number(formData.physics_marks) || 0) +
     (Number(formData.chemistry_marks) || 0) +
-    (Number(formData.biology_marks) || 0) +
-    (Number(formData.english_marks) || 0);
+    (Number(formData.biology_marks) || 0);
 
   async function uploadFile(file, folder) {
     const ext = file.name.split(".").pop();
@@ -105,7 +103,6 @@ export default function Home() {
           religion: formData.religion.trim() || null,
           caste: formData.caste.trim() || null,
           sub_caste: formData.sub_caste.trim() || null,
-          course: formData.course,
           physics_marks: formData.physics_marks ? Number(formData.physics_marks) : null,
           chemistry_marks: formData.chemistry_marks ? Number(formData.chemistry_marks) : null,
           biology_marks: formData.biology_marks ? Number(formData.biology_marks) : null,
@@ -140,9 +137,8 @@ export default function Home() {
   const formSections = [
     { id: "personal", label: "Personal", step: 1 },
     { id: "contact", label: "Contact", step: 2 },
-    { id: "course", label: "Course", step: 3 },
-    { id: "academic", label: "Academics", step: 4 },
-    { id: "payment", label: "Payment", step: 5 },
+    { id: "academic", label: "Academics", step: 3 },
+    { id: "payment", label: "Payment", step: 4 },
   ];
 
   function sectionHeader(step, title, subtitle) {
@@ -319,26 +315,8 @@ export default function Home() {
             </div>
           </section>
 
-          <section id="course" className="section">
-            {sectionHeader(3, "Course Selection")}
-            <div className="section-body">
-          <div className="grid">
-            <div className="field full">
-              <label>Name of Course <span className="required">*</span></label>
-              <select name="course" className={cls("course")} value={formData.course} onChange={handleChange}>
-                <option value="">Select a course</option>
-                <option value="Medical Faculty">Medical Faculty</option>
-                <option value="Dental">Dental</option>
-                <option value="Post Graduate">Post Graduate</option>
-              </select>
-              {err("course")}
-            </div>
-          </div>
-            </div>
-          </section>
-
           <section id="academic" className="section">
-            {sectionHeader(4, "Qualifying Examination (10+2)", "Enter marks obtained out of 100 for each subject")}
+            {sectionHeader(3, "Qualifying Examination (10+2)", "Enter marks obtained out of 100 for each subject")}
             <div className="section-body">
           <div className="marks-table-wrap">
           <table className="marks-table">
@@ -378,7 +356,7 @@ export default function Home() {
           </div>
           <div className="pcb-total">
             <span>PCB Grand Total</span>
-            <span>{pcbTotal} / 400</span>
+            <span>{pcbTotal} / 300</span>
           </div>
 
           <div className="field neet-field">
@@ -390,7 +368,7 @@ export default function Home() {
           </section>
 
           <section id="payment" className="section">
-            {sectionHeader(5, "Payment Details", "Upload proof of payment to complete your application")}
+            {sectionHeader(4, "Payment Details", "Upload proof of payment to complete your application")}
             <div className="section-body">
           <div className="grid">
             <div className="field">

@@ -180,7 +180,6 @@ export default function AdminPage() {
                 <th>Full Name</th>
                 <th>Mobile</th>
                 <th>Email</th>
-                <th>Course</th>
                 <th>City / State</th>
                 <th>PCB Total</th>
                 <th>NEET</th>
@@ -197,7 +196,6 @@ export default function AdminPage() {
                   <td data-label="Full Name">{r.full_name}</td>
                   <td data-label="Mobile">{r.mobile}</td>
                   <td data-label="Email">{r.email}</td>
-                  <td data-label="Course"><span className="course-tag">{r.course}</span></td>
                   <td data-label="City / State">{r.city}, {r.state}</td>
                   <td data-label="PCB Total">{r.pcb_total ?? "-"}</td>
                   <td data-label="NEET">{r.neet_score ?? "-"}</td>

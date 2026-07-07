@@ -1244,17 +1244,6 @@ table.admin-table .empty-row td::before {
   color: var(--red-dark);
 }
 
-.course-tag {
-  display: inline-block;
-  padding: 4px 10px;
-  background: var(--yellow-soft);
-  color: var(--black);
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
 /* ── Mobile-first breakpoints (enhance for larger screens) ── */
 
 @media (min-width: 480px) {
