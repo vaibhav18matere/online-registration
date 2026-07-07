@@ -1,6 +1,7 @@
 import "./globals.css";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
+import { AppThemeProvider } from "../components/AppThemeProvider";
 
 export const metadata = {
   title: "KRSU Online Registration Portal",
@@ -26,11 +27,13 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body>
-        <div className="min-h-screen min-h-dvh flex flex-col bg-yellow-bg">
-          <SiteHeader />
-          {children}
-          <SiteFooter />
-        </div>
+        <AppThemeProvider>
+          <div className="min-h-screen min-h-dvh flex flex-col">
+            <SiteHeader />
+            {children}
+            <SiteFooter />
+          </div>
+        </AppThemeProvider>
       </body>
     </html>
   );

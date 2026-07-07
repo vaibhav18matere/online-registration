@@ -36,7 +36,7 @@ export function DeclarationModal({ isOpen, onClose }) {
       role="presentation"
     >
       <div
-        className="flex flex-col w-full sm:w-[min(760px,100%)] max-h-[min(92dvh,900px)] sm:max-h-[min(88dvh,900px)] bg-white border-[1.5px] border-line rounded-t-xl sm:rounded-xl shadow-md overflow-hidden"
+        className="flex flex-col w-full sm:w-[min(760px,100%)] max-h-[min(92dvh,900px)] sm:max-h-[min(88dvh,900px)] bg-yellow-soft border-[1.5px] border-line rounded-t-xl sm:rounded-xl shadow-md overflow-hidden"
         role="dialog"
         aria-modal="true"
         aria-labelledby="declaration-modal-title"
@@ -45,13 +45,13 @@ export function DeclarationModal({ isOpen, onClose }) {
         <div className="flex items-center justify-between gap-4 px-4 sm:px-6 py-4 sm:py-5 border-b border-line bg-yellow-bg">
           <h2
             id="declaration-modal-title"
-            className="m-0 font-serif text-lg sm:text-[22px] text-black"
+            className="m-0 font-serif text-lg sm:text-[22px] text-white"
           >
             Undertaking and Declaration
           </h2>
           <button
             type="button"
-            className="inline-flex items-center justify-center w-9 h-9 border-0 rounded-lg bg-transparent text-black text-[28px] leading-none cursor-pointer hover:bg-black/6"
+            className="inline-flex items-center justify-center w-9 h-9 border-0 rounded-lg bg-transparent text-white text-[28px] leading-none cursor-pointer hover:bg-white/10"
             onClick={onClose}
             aria-label="Close declaration"
           >
@@ -59,18 +59,18 @@ export function DeclarationModal({ isOpen, onClose }) {
           </button>
         </div>
         <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 sm:py-6">
-          <p className="m-0 mb-5 text-sm sm:text-[14px] leading-relaxed text-black">
+          <p className="m-0 mb-5 text-sm sm:text-[14px] leading-relaxed text-white/90">
             {declarationIntro}
           </p>
           <ol className="m-0 pl-5 grid gap-3">
             {declarationPoints.map((point, index) => (
-              <li key={index} className="text-sm sm:text-[14px] leading-relaxed text-black">
+              <li key={index} className="text-sm sm:text-[14px] leading-relaxed text-white/90">
                 {point}
               </li>
             ))}
           </ol>
         </div>
-        <div className="px-4 sm:px-6 py-3.5 sm:py-4 border-t border-line bg-white">
+        <div className="px-4 sm:px-6 py-3.5 sm:py-4 border-t border-line bg-yellow-soft">
           <button type="button" className={`${primaryButtonClass} w-full!`} onClick={onClose}>
             I have read this
           </button>
