@@ -2,6 +2,21 @@
 
 import { useEffect, useState } from "react";
 import { getSupabase } from "../../lib/supabase";
+import { ADMISSION_DOCUMENTS } from "../../lib/documents";
+
+function DocumentLinks({ registration }) {
+  const links = ADMISSION_DOCUMENTS.filter((doc) => registration[doc.dbColumn]).map((doc) => (
+    <a key={doc.dbColumn} href={registration[doc.dbColumn]} target="_blank" rel="noreferrer">
+      {doc.label}
+    </a>
+  ));
+
+  if (links.length === 0) {
+    return "-";
+  }
+
+  return <div className="document-links">{links}</div>;
+}
 
 export default function AdminPage() {
   const [session, setSession] = useState(null);
@@ -186,7 +201,7 @@ export default function AdminPage() {
                 <th>Payment</th>
                 <th>UTR</th>
                 <th>Screenshot</th>
-                <th>Photo</th>
+                <th>Documents</th>
               </tr>
             </thead>
             <tbody>
@@ -206,10 +221,8 @@ export default function AdminPage() {
                       <a href={r.payment_screenshot_url} target="_blank" rel="noreferrer">View</a>
                     ) : "-"}
                   </td>
-                  <td data-label="Photo">
-                    {r.photograph_url ? (
-                      <a href={r.photograph_url} target="_blank" rel="noreferrer">View</a>
-                    ) : "-"}
+                  <td data-label="Documents">
+                    <DocumentLinks registration={r} />
                   </td>
                 </tr>
               ))}

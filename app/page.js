@@ -3,7 +3,10 @@
 import { useState } from "react";
 import { getSupabase } from "../lib/supabase";
 import { validateForm } from "../lib/validation";
+import { ADMISSION_DOCUMENTS, createInitialDocumentFiles } from "../lib/documents";
 import { DeclarationModal } from "../components/DeclarationModal";
+
+const initialDocumentFiles = createInitialDocumentFiles();
 
 const initialState = {
   full_name: "",
@@ -34,7 +37,10 @@ const initialState = {
 
 export default function Home() {
   const [formData, setFormData] = useState(initialState);
-  const [files, setFiles] = useState({ payment_screenshot: null, photograph: null });
+  const [files, setFiles] = useState({
+    payment_screenshot: null,
+    ...initialDocumentFiles,
+  });
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState(null); // { type: 'success' | 'error', message }
@@ -67,6 +73,19 @@ export default function Home() {
     return data.publicUrl;
   }
 
+  async function uploadDocumentFiles(documentFiles) {
+    const uploads = ADMISSION_DOCUMENTS.map(async (doc) => {
+      const file = documentFiles[doc.name];
+      if (!file) {
+        return [doc.dbColumn, null];
+      }
+      const url = await uploadFile(file, doc.storageFolder);
+      return [doc.dbColumn, url];
+    });
+    const results = await Promise.all(uploads);
+    return Object.fromEntries(results);
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     setStatus(null);
@@ -81,8 +100,15 @@ export default function Home() {
 
     setSubmitting(true);
     try {
-      const paymentScreenshotUrl = await uploadFile(files.payment_screenshot, "screenshots");
-      const photographUrl = files.photograph ? await uploadFile(files.photograph, "photos") : null;
+      const documentFiles = {};
+      ADMISSION_DOCUMENTS.forEach((doc) => {
+        documentFiles[doc.name] = files[doc.name];
+      });
+
+      const [paymentScreenshotUrl, documentUrls] = await Promise.all([
+        uploadFile(files.payment_screenshot, "screenshots"),
+        uploadDocumentFiles(documentFiles),
+      ]);
 
       const { error } = await getSupabase().from("registrations").insert([
         {
@@ -112,7 +138,7 @@ export default function Home() {
           payment_mode: formData.payment_mode,
           utr_number: formData.utr_number.trim() || null,
           payment_screenshot_url: paymentScreenshotUrl,
-          photograph_url: photographUrl,
+          ...documentUrls,
         },
       ]);
 
@@ -120,7 +146,7 @@ export default function Home() {
 
       setStatus({ type: "success", message: "Application submitted successfully. We'll be in touch shortly." });
       setFormData(initialState);
-      setFiles({ payment_screenshot: null, photograph: null });
+      setFiles({ payment_screenshot: null, ...initialDocumentFiles });
       setConsentAccepted(false);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
@@ -139,6 +165,7 @@ export default function Home() {
     { id: "contact", label: "Contact", step: 2 },
     { id: "academic", label: "Academics", step: 3 },
     { id: "payment", label: "Payment", step: 4 },
+    { id: "documents", label: "Documents", step: 5 },
   ];
 
   function sectionHeader(step, title, subtitle) {
@@ -408,23 +435,44 @@ export default function Home() {
               </label>
               {err("payment_screenshot")}
             </div>
-
-            <div className="field full">
-              <label>Passport Size Photograph</label>
-              <label className={`file-drop ${files.photograph ? "has-file" : ""}`}>
-                <input type="file" name="photograph" accept="image/*" onChange={handleFileChange} />
-                {files.photograph ? (
-                  <div className="filename">{files.photograph.name}</div>
-                ) : (
-                  <>
-                    <div className="file-drop-icon" aria-hidden="true">🖼</div>
-                    <div className="file-drop-title">Click to upload photograph</div>
-                    <div className="hint">JPG or PNG · up to 5MB</div>
-                  </>
-                )}
-              </label>
-              {err("photograph")}
+          </div>
             </div>
+          </section>
+
+          <section id="documents" className="section">
+            {sectionHeader(5, "Upload Documents", "Documents for admission — fields marked with * are mandatory")}
+            <div className="section-body">
+          <div className="grid">
+            {ADMISSION_DOCUMENTS.map((doc) => (
+              <div key={doc.name} className="field full">
+                <label>
+                  {doc.label}
+                  {doc.required ? (
+                    <span className="required"> *</span>
+                  ) : (
+                    <span className="optional-hint"> ({doc.optionalHint})</span>
+                  )}
+                </label>
+                <label className={`file-drop ${files[doc.name] ? "has-file" : ""}`}>
+                  <input
+                    type="file"
+                    name={doc.name}
+                    accept={doc.accept}
+                    onChange={handleFileChange}
+                  />
+                  {files[doc.name] ? (
+                    <div className="filename">{files[doc.name].name}</div>
+                  ) : (
+                    <>
+                      <div className="file-drop-icon" aria-hidden="true">📄</div>
+                      <div className="file-drop-title">Click to upload {doc.label.toLowerCase()}</div>
+                      <div className="hint">{doc.hint}</div>
+                    </>
+                  )}
+                </label>
+                {err(doc.name)}
+              </div>
+            ))}
           </div>
             </div>
           </section>
