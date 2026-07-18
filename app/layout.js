@@ -5,7 +5,13 @@ import { AppThemeProvider } from "../components/AppThemeProvider";
 
 export const metadata = {
   title: "KRSU Online Registration Portal",
-  description: "A new stage of transformation",
+  description:
+    "Online medical admissions portal for Kyrgyz Russian Slavic University (KRSU). Apply for MBBS, track your application, and manage documents.",
+  icons: {
+    icon: [{ url: "/krsu-logo.jpg", type: "image/jpeg" }],
+    apple: [{ url: "/krsu-logo.jpg", type: "image/jpeg" }],
+    shortcut: ["/krsu-logo.jpg"],
+  },
 };
 
 export const viewport = {
