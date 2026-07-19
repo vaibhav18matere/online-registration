@@ -55,7 +55,7 @@ export function DeclarationModal({ isOpen, onClose }) {
             onClick={onClose}
             aria-label="Close declaration"
           >
-            ×
+            X
           </button>
         </div>
         <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 sm:py-6">
