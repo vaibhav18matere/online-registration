@@ -142,10 +142,10 @@ export default function LoginPage() {
         <span className="inline-block text-[11px] font-bold tracking-widest uppercase text-red mb-3">
           Student Login
         </span>
-        <h1 className="text-white text-[clamp(22px,5vw,28px)] mb-2">Sign in to continue</h1>
-        <p className="text-text-muted text-sm m-0 mb-7 leading-relaxed">
+        <h1 className="text-white text-[clamp(22px,5vw,28px)] mb-8">Sign in to continue</h1>
+        {/* <p className="text-text-muted text-sm m-0 mb-7 leading-relaxed">
           Verify with OTP on your mobile, or sign in with Google.
-        </p>
+        </p> */}
 
         <button
           type="button"
@@ -164,11 +164,11 @@ export default function LoginPage() {
           {googleLoading ? "Redirecting to Google..." : "Continue with Google"}
         </button>
 
-        <div className="flex items-center gap-3 my-6">
+        {/* <div className="flex items-center gap-3 my-6">
           <span className="h-px flex-1 bg-line" aria-hidden="true" />
           <span className="text-xs font-semibold uppercase tracking-wide text-text-muted">or</span>
           <span className="h-px flex-1 bg-line" aria-hidden="true" />
-        </div>
+        </div> */}
 
         {error && (
           <div className={`${bannerErrorClass} mb-5`} role="alert">
@@ -176,7 +176,7 @@ export default function LoginPage() {
           </div>
         )}
 
-        {step === "mobile" ? (
+        {/* {step === "mobile" ? (
           <form onSubmit={handleSendOtp}>
             <div className={fieldClass}>
               <label htmlFor="login-mobile" className={labelClass}>
@@ -254,7 +254,7 @@ export default function LoginPage() {
               Change number
             </button>
           </form>
-        )}
+        )} */}
       </div>
     </main>
   );

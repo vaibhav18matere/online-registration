@@ -9,7 +9,7 @@ const APPLICATION_STEPS = [
   {
     step: "1",
     title: "Sign in",
-    text: "Verify your identity securely with Google or a mobile OTP.",
+    text: "Verify your identity securely with Google",
   },
   {
     step: "2",
@@ -209,8 +209,7 @@ export default function HomePage() {
             KRSU Medical Admissions
           </h1>
           <p className="text-white/85 text-[clamp(15px,3.5vw,17px)] max-w-[580px] m-0 mb-8 leading-relaxed drop-shadow-[0_1px_8px_rgba(0,0,0,0.35)]">
-            Apply online for MBBS admissions at Kyrgyz Russian Slavic University. Sign in with Google
-            or mobile OTP, complete your registration, and follow progress from your dashboard.
+            Apply online for MBBS admissions at Kyrgyz Russian Slavic University. Sign in, complete your registration and follow progress from your dashboard.
           </p>
           <div className="flex flex-col xs:flex-row gap-3">
             <Link href={primaryHref} className={`${primaryButtonClass} inline-flex no-underline justify-center shadow-lg`}>
