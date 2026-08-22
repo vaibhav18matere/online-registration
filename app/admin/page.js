@@ -14,7 +14,7 @@ import {
   sectionClass,
   spinnerClass,
 } from "../../lib/uiClasses";
-import isAdminSession from "../../lib/isAdminSession";
+import {isAdminSession} from "../../lib/authSession";
 
 function AdminLoginCard({ title, description, children }) {
   return (
