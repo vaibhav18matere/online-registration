@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { Box, Button, Chip, Paper, Typography } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { isAdminSession } from "../../lib/authSession";
 import { getSupabase } from "../../lib/supabase";
 import { RegistrationsDataGrid } from "../../components/RegistrationsDataGrid";
 import {
@@ -15,7 +14,7 @@ import {
   sectionClass,
   spinnerClass,
 } from "../../lib/uiClasses";
-import isAdminSession from "../../lib/isAdminSession";
+import {isAdminSession} from "../../lib/authSession";
 
 function AdminLoginCard({ title, description, children }) {
   return (
@@ -118,7 +117,7 @@ export default function AdminPage() {
     }
     setLoggingIn(false);
   }
-    
+
   async function handleLogout() {
     await getSupabase().auth.signOut();
   }
