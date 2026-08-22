@@ -6,6 +6,7 @@ import {
   getAuthProviderFromSession,
   getGoogleEmailFromSession,
   getLoginDisplayFromSession,
+  isAdminSession,
   isPhoneAuthSession,
 } from "../lib/authSession";
 import { getVerifiedMobileFromSession } from "../lib/formState";
@@ -90,6 +91,7 @@ export function useStudentSession() {
     checkingSession,
     initError,
     isAuthenticated: Boolean(session),
+    isAdmin: isAdminSession(session),
     signOut,
   };
 }
