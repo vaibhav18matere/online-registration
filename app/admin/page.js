@@ -15,6 +15,7 @@ import {
   sectionClass,
   spinnerClass,
 } from "../../lib/uiClasses";
+import isAdminSession from "../../lib/isAdminSession";
 
 function AdminLoginCard({ title, description, children }) {
   return (
@@ -117,7 +118,7 @@ export default function AdminPage() {
     }
     setLoggingIn(false);
   }
-
+    
   async function handleLogout() {
     await getSupabase().auth.signOut();
   }
