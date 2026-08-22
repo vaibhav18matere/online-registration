@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Box, Button, Chip, Paper, Typography } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
+import { isAdminSession } from "../../lib/authSession";
 import { getSupabase } from "../../lib/supabase";
 import { RegistrationsDataGrid } from "../../components/RegistrationsDataGrid";
 import {
@@ -82,7 +83,7 @@ export default function AdminPage() {
   }, []);
 
   useEffect(() => {
-    if (session) {
+    if (isAdminSession(session)) {
       fetchRegistrations();
     }
   }, [session]);
@@ -103,9 +104,16 @@ export default function AdminPage() {
     event.preventDefault();
     setLoginError(null);
     setLoggingIn(true);
-    const { error } = await getSupabase().auth.signInWithPassword({ email, password });
+    const { data, error } = await getSupabase().auth.signInWithPassword({ email, password });
     if (error) {
       setLoginError(error.message);
+      setLoggingIn(false);
+      return;
+    }
+
+    if (!isAdminSession(data.session)) {
+      await getSupabase().auth.signOut();
+      setLoginError("This account does not have admin access.");
     }
     setLoggingIn(false);
   }
@@ -146,13 +154,13 @@ export default function AdminPage() {
     );
   }
 
-  if (!session) {
+  if (!isAdminSession(session)) {
     return (
       <main className={pageClass}>
         <div className="flex items-center justify-center min-h-[calc(100dvh-220px)] py-6 sm:py-12 px-3 sm:px-6">
           <AdminLoginCard
             title="Admin Login"
-            description="Sign in to view and manage student registration submissions."
+            description="Sign in with admin credentials to view and manage student registration submissions."
           >
             <form onSubmit={handleLogin}>
               <div className={fieldClass}>

@@ -25,9 +25,10 @@ const SECTION_LINKS = [
 
 export function SiteHeader() {
   const pathname = usePathname();
-  const isAdmin = pathname.startsWith("/admin");
+  const isAdminRoute = pathname.startsWith("/admin");
   const isLogin = pathname.startsWith("/login");
-  const { isAuthenticated, checkingSession, signOut } = useStudentSession();
+  const { isAuthenticated, isAdmin, checkingSession, signOut } = useStudentSession();
+  const showAdminChrome = isAdminRoute && isAdmin;
   const [menuOpen, setMenuOpen] = useState(false);
   const menuId = useId();
 
@@ -143,37 +144,37 @@ export function SiteHeader() {
         </button>
 
         <nav className="hidden md:flex items-center gap-2 shrink-0" aria-label="Site">
-          {!isAdmin && !checkingSession && isAuthenticated && (
+          {!showAdminChrome && !checkingSession && isAuthenticated && (
             <Link href="/dashboard" className={navLinkClass}>
               Dashboard
             </Link>
           )}
-          {!isAdmin && !checkingSession && !isAuthenticated && !isLogin && (
+          {!showAdminChrome && !checkingSession && !isAuthenticated && !isLogin && (
             <Link href="/login" className={navLinkClass}>
               Login
             </Link>
           )}
-          {!isAdmin && !checkingSession && isAuthenticated && (
+          {!showAdminChrome && !checkingSession && isAuthenticated && (
             <Link href="/application" className={navLinkClass}>
               Application
             </Link>
           )}
-          {!isAdmin && !checkingSession && !isAuthenticated && (
+          {!showAdminChrome && !checkingSession && !isAuthenticated && (
             <Link href="/login?redirect=/application" className={navLinkClass}>
               Apply Now
             </Link>
           )}
-          {!isAdmin && (
+          {!showAdminChrome && !checkingSession && isAdmin && (
             <Link href="/admin" className={navLinkClass}>
               Admin
             </Link>
           )}
-          {!isAdmin && !checkingSession && isAuthenticated && (
+          {!showAdminChrome && !checkingSession && isAuthenticated && (
             <button type="button" className={navLinkClass} onClick={signOut}>
               Logout
             </button>
           )}
-          {isAdmin && (
+          {showAdminChrome && (
             <Link href="/" className={navLinkClass}>
               Home
             </Link>
@@ -196,7 +197,7 @@ export function SiteHeader() {
             aria-label="Navigation menu"
           >
             <nav className="px-4 py-4 pb-[max(16px,env(safe-area-inset-bottom,0px))]" aria-label="Mobile">
-              {!isAdmin && (
+              {!showAdminChrome && (
                 <div className="mb-4">
                   <p className="m-0 mb-2 px-4 text-[11px] font-bold tracking-widest uppercase text-red">
                     Explore
@@ -222,7 +223,7 @@ export function SiteHeader() {
                   Account
                 </p>
                 <ul className="m-0 p-0 list-none space-y-1">
-                  {isAdmin ? (
+                  {showAdminChrome ? (
                     <li>
                       <Link href="/" className={mobileMenuLinkClass} onClick={closeMenu}>
                         Home
@@ -262,11 +263,13 @@ export function SiteHeader() {
                           </Link>
                         </li>
                       )}
-                      <li>
-                        <Link href="/admin" className={mobileMenuLinkClass} onClick={closeMenu}>
-                          Admin
-                        </Link>
-                      </li>
+                      {!checkingSession && isAdmin && (
+                        <li>
+                          <Link href="/admin" className={mobileMenuLinkClass} onClick={closeMenu}>
+                            Admin
+                          </Link>
+                        </li>
+                      )}
                       {!checkingSession && isAuthenticated && (
                         <li>
                           <button
