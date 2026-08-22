@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Box, Button, Chip, Paper, Typography } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
+import { isAdminSession } from "../../lib/authSession";
 import { getSupabase } from "../../lib/supabase";
 import { RegistrationsDataGrid } from "../../components/RegistrationsDataGrid";
 import {
@@ -111,9 +112,9 @@ export default function AdminPage() {
       return;
     }
 
-    if(!isAdminSession(data.session)) {
+    if (!isAdminSession(data.session)) {
       await getSupabase().auth.signOut();
-      setLoginError("You do not have admin access.");
+      setLoginError("This account does not have admin access.");
     }
     setLoggingIn(false);
   }

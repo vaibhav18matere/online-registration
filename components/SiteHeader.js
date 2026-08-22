@@ -164,7 +164,7 @@ export function SiteHeader() {
               Apply Now
             </Link>
           )}
-          {!showAdminChrome && (
+          {!showAdminChrome && !checkingSession && isAdmin && (
             <Link href="/admin" className={navLinkClass}>
               Admin
             </Link>
@@ -262,14 +262,14 @@ export function SiteHeader() {
                             Apply Now
                           </Link>
                         </li>
-                        )}
-                        {!checkingSession && isAdmin && (
-                          <li>
-                            <Link href="/admin" className={mobileMenuLinkClass} onClick={closeMenu}>
-                              Admin
-                            </Link>
-                          </li>
-                        )}
+                      )}
+                      {!checkingSession && isAdmin && (
+                        <li>
+                          <Link href="/admin" className={mobileMenuLinkClass} onClick={closeMenu}>
+                            Admin
+                          </Link>
+                        </li>
+                      )}
                       {!checkingSession && isAuthenticated && (
                         <li>
                           <button
